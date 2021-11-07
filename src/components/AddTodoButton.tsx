@@ -9,13 +9,9 @@ const AddTodoButton: React.FC = () => {
   const [title, setTitle] = useState<string>('');
 
   const mutation = useMutation((
-    newTodo: {
-      todo: {
-        title: string,
-      },
-    },
+    newTodo: { title: string },
   ) => client.post('todos', newTodo), {
-    onSuccess: () => history.push('/'),
+    onSuccess: () => history.push('/todos'),
   });
 
   return (
@@ -37,12 +33,14 @@ const AddTodoButton: React.FC = () => {
       />
 
       <Button
-        onClick={() => mutation.mutate({ todo: { title } })}
+        onClick={() => mutation.mutate({ title })}
         mt='6'
-        colot='gray.dark'
+        disabled={!title}
+        color='gray.dark'
         bgColor='yellow.default'
         _hover={{ bgColor: 'yellow.dark' }}
         _active={{ bgColor: 'yellow.light' }}
+        left='calc(50% - 74px)'
       >
         Add New Todo
       </Button>

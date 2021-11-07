@@ -1,20 +1,28 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { useQuery } from "react-query";
 import client from "../utils/client";
 import { Todo } from '../types';
 import { DeleteTodoButton, UpdateTodoButton } from './';
 import NewTodoButton from "./NewTodoButton";
+import { useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Todos: React.FC = () => {
-  const { isLoading, data: todos } = useQuery<Todo[]>('todos', () => {
-    return client
-      .get('todos')
-      .then((res) => res.data.todos);
-  });
+  const history = useHistory();
+  const token = localStorage.getItem('token');
+  const [todos, setTodos] = useState<Array<Todo>>([]);
 
-  if (isLoading) {
-    return null;
+  if (!token) {
+    history.push('/login');
   }
+
+  useEffect(() => {
+    async function test() {
+      const response = await client.get('todos/user')
+      setTodos(response.data.todos)
+    }
+
+    test();
+  }, []);
 
   if (todos) {
     return (
@@ -34,6 +42,19 @@ const Todos: React.FC = () => {
             borderRadius='16px'
             experimental_spaceY='4'
           >
+            {
+              !todos.length ?
+                <Flex
+                  direction='column'
+                  alignItems='center'
+                >
+                  <Text>You have nothing to do 😞</Text>
+                  <Text>Click the button to add some todo</Text>
+                  <Text>👇🏼</Text>
+                </Flex>
+                : null
+            }
+
             {todos.map((todo: Todo) => (
               <Flex
                 alignItems='center'
@@ -53,7 +74,6 @@ const Todos: React.FC = () => {
             <NewTodoButton />
           </Box>
         </Flex >
-
       </Box >
     )
   }

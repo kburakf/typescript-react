@@ -13,6 +13,14 @@ const theme = extendTheme({
       default: '#393E46',
       dark: '#222831',
     },
+    green: {
+      forest: '#228B22',
+      lime: '#32CD32',
+    },
+    blue: {
+      baby: '#89CFF0',
+      bright: '#0096FF'
+    }
   },
 });
 
