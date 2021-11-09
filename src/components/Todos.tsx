@@ -1,28 +1,30 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
+import { useQuery } from "react-query";
 import client from "../utils/client";
 import { Todo } from '../types';
 import { DeleteTodoButton, UpdateTodoButton } from './';
 import NewTodoButton from "./NewTodoButton";
 import { useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 const Todos: React.FC = () => {
   const history = useHistory();
   const token = localStorage.getItem('token');
-  const [todos, setTodos] = useState<Array<Todo>>([]);
 
   if (!token) {
     history.push('/login');
   }
 
-  useEffect(() => {
-    async function test() {
-      const response = await client.get('todos/user')
-      setTodos(response.data.todos)
-    }
+  const { isLoading, data: todos } = useQuery<Todo[]>('todos', () => {
+    return client
+      .get('todos/user')
+      .then((res) => res.data.todos);
+  });
 
-    test();
-  }, []);
+  if (isLoading) {
+    return null;
+  }
+
+  console.log(todos)
 
   if (todos) {
     return (
@@ -63,7 +65,7 @@ const Todos: React.FC = () => {
               >
                 <UpdateTodoButton key={todo.id} todo={todo} />
 
-                <Text color='gray.dark' fontSize='xl'>
+                <Text key={todo.id} color='gray.dark' fontSize='xl'>
                   {todo.title}
                 </Text>
 

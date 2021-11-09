@@ -24,6 +24,7 @@ const DeleteTodoButton: React.FC<ITodoProps> = (props) => {
 
   return (
     <Icon
+      key={todo.id}
       onClick={() => deleteMutation.mutate(todo)}
       color='red.300'
       _hover={{ color: 'red.700' }}

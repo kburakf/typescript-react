@@ -16,7 +16,7 @@ const UpdateTodoButton: React.FC<ITodoProps> = (props) => {
   const updateMutation = useMutation(
     (todo: Todo) => {
       return client
-        .put(`/todos/${todo.id}`, {
+        .patch(`todos/${todo.id}`, {
           done: !todo.done
         })
     },
@@ -29,6 +29,7 @@ const UpdateTodoButton: React.FC<ITodoProps> = (props) => {
 
   return (
     <Icon
+      key={todo.id}
       onClick={() => updateMutation.mutate(todo)}
       fontSize='2xl'
       color='gray.light_dark'
